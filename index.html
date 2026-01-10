@@ -18,6 +18,7 @@
             --border-blue: #0055ff;
             --neon-glow: rgba(0, 85, 255, 0.4);
             --danger: #ff4444;
+            --success: #00ff88;
         }
 
         body {
@@ -32,6 +33,48 @@
             align-items: center;
             min-height: 100vh;
         }
+
+        /* --- SISTEMA NOTIFICHE --- */
+        #notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .notice {
+            background: rgba(13, 17, 23, 0.95);
+            border-left: 4px solid var(--police-blue);
+            color: white;
+            padding: 15px 25px;
+            font-family: 'Orbitron';
+            font-size: 0.75rem;
+            min-width: 280px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5), inset 0 0 5px var(--neon-glow);
+            backdrop-filter: blur(10px);
+            animation: slideIn 0.3s ease forwards;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            letter-spacing: 1px;
+        }
+
+        .notice.success { border-left-color: var(--success); text-shadow: 0 0 5px var(--success); }
+        .notice.error { border-left-color: var(--danger); text-shadow: 0 0 5px var(--danger); }
+        .notice.info { border-left-color: var(--police-accent); text-shadow: 0 0 5px var(--police-accent); }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        @keyframes fadeOut {
+            to { transform: translateX(20px); opacity: 0; }
+        }
+        /* --- FINE NOTIFICHE --- */
 
         .police-logo {
             width: 130px;
@@ -164,24 +207,13 @@
 
         .footer-text { font-family: 'Orbitron'; font-size: 0.7rem; letter-spacing: 2px; color: rgba(255, 255, 255, 0.7); }
         .footer-text span { color: var(--police-accent); }
-
-        #notification {
-            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-            background: rgba(5, 15, 30, 0.95); border: 2px solid var(--police-accent);
-            color: white; padding: 40px; text-align: center; z-index: 1000; font-family: 'Orbitron';
-            box-shadow: 0 0 100px rgba(0,0,0,1), 0 0 30px var(--neon-glow); backdrop-filter: blur(10px);
-        }
     </style>
 </head>
 <body>
 
-<img src="./logo.png" alt="LSPD Logo" class="police-logo">
+<div id="notification-container"></div>
 
-<div id="notification">
-    <h2 style="color: var(--police-accent); margin-top: 0; letter-spacing: 3px;">REPORT ARCHIVIATO</h2>
-    <p style="font-size: 0.9rem;">Il fascicolo è stato trasmesso con successo ai server crittografati.</p>
-    <div style="margin-top: 20px; color: var(--police-blue); font-size: 0.8rem;">CONNESSIONE SICURA STABILITA</div>
-</div>
+<img src="./logo.png" alt="LSPD Logo" class="police-logo">
 
 <div id="loginSection" class="container">
     <div class="classified-tag">Restricted Access</div>
@@ -196,7 +228,6 @@
             <input type="password" id="password" placeholder="••••••••" required>
         </div>
         <button type="submit" id="btnLogin">AUTENTICAZIONE</button>
-        <p id="loginError" style="color: var(--danger); text-align: center; margin-top: 15px; display: none; font-family: 'Orbitron'; font-size: 0.8rem;"></p>
     </form>
 </div>
 
@@ -260,6 +291,20 @@
 <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
 
 <script>
+    // --- FUNZIONE NOTIFICHE ---
+    function showNotice(message, type = 'info') {
+        const container = document.getElementById('notification-container');
+        const notice = document.createElement('div');
+        notice.className = `notice ${type}`;
+        notice.innerHTML = `<span>${message}</span>`;
+        container.appendChild(notice);
+
+        setTimeout(() => {
+            notice.style.animation = "fadeOut 0.5s ease forwards";
+            setTimeout(() => notice.remove(), 500);
+        }, 4000);
+    }
+
     const firebaseConfig = {
         apiKey: "AIzaSyDfIW4GjBZ4QGPvfJtzLAr34VxDRLzcU6M",
         authDomain: "lspd-portal-d34b0.firebaseapp.com",
@@ -278,14 +323,18 @@
 
     const loginSection = document.getElementById('loginSection');
     const bandoSection = document.getElementById('bandoSection');
+    const btnLogin = document.getElementById('btnLogin');
 
     auth.onAuthStateChanged(user => {
         if (user) {
             loginSection.classList.add('hidden');
             bandoSection.classList.remove('hidden');
+            showNotice("ACCESSO AUTORIZZATO: TERMINALE OPERATIVO", "success");
         } else {
             loginSection.classList.remove('hidden');
             bandoSection.classList.add('hidden');
+            btnLogin.innerText = "AUTENTICAZIONE";
+            btnLogin.disabled = false;
         }
     });
 
@@ -293,27 +342,26 @@
         e.preventDefault();
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
-        const btn = document.getElementById('btnLogin');
-        const err = document.getElementById('loginError');
 
-        btn.innerText = "VERIFICA IN CORSO...";
-        btn.disabled = true;
-        err.style.display = "none";
+        btnLogin.innerText = "VERIFICA IN CORSO...";
+        btnLogin.disabled = true;
 
         auth.signInWithEmailAndPassword(email, pass).catch(error => {
-            err.innerText = "ACCESSO NEGATO: CREDENZIALI ERRATE";
-            err.style.display = "block";
-            btn.innerText = "AUTENTICAZIONE";
-            btn.disabled = false;
+            showNotice("ERRORE: CREDENZIALI NON VALIDE", "error");
+            btnLogin.innerText = "AUTENTICAZIONE";
+            btnLogin.disabled = false;
         });
     });
 
-    function logout() { auth.signOut(); }
-// --- LOGICA INVIO BANDO AGGIORNATA ---
+    function logout() { 
+        auth.signOut().then(() => {
+            showNotice("DISCONNESSIONE EFFETTUATA", "info");
+        }); 
+    }
+
     document.getElementById('bandoForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnInvia');
-        const btnLogin = document.getElementById('btnLogin'); // Referenza al tasto login
         
         btn.innerText = "CRIPTAGGIO E INVIO...";
         btn.disabled = true;
@@ -348,26 +396,17 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).then(() => {
-            const notify = document.getElementById('notification');
-            notify.style.display = 'block';
+            showNotice("REPORT ARCHIVIATO CON SUCCESSO", "success");
             
             setTimeout(() => {
-                notify.style.display = 'none';
-                
-                // 1. Reset tasto invio bando
                 btn.innerText = "INOLTRA AL COMANDO";
                 btn.disabled = false;
                 document.getElementById('bandoForm').reset();
-                
-                // 2. Reset tasto login (importante per quando l'utente torna indietro)
-                btnLogin.innerText = "AUTENTICAZIONE";
-                btnLogin.disabled = false;
-
-                // 3. Esegui logout
                 logout(); 
-            }, 5000);
+            }, 3000);
+
         }).catch(err => {
-            alert("Errore critico di rete.");
+            showNotice("ERRORE CRITICO DI TRASMISSIONE", "error");
             btn.disabled = false;
             btn.innerText = "INOLTRA AL COMANDO";
         });
@@ -376,5 +415,3 @@
 
 </body>
 </html>
-
-
