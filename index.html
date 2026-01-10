@@ -310,63 +310,71 @@
 
     function logout() { auth.signOut(); }
 // --- LOGICA INVIO BANDO AGGIORNATA ---
-document.getElementById('bandoForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('btnInvia');
-    btn.innerText = "CRIPTAGGIO E INVIO...";
-    btn.disabled = true;
-
-    const data = {
-        reparto: document.getElementById('reparto').value,
-        nomecognome: document.getElementById('nomecognome').value,
-        matricola: document.getElementById('matricola').value,
-        grado: document.getElementById('grado').value,
-        esperienza: document.getElementById('esperienza').value,
-        motivazione: document.getElementById('motivazione').value
-    };
-
-    const payload = {
-        content: `📢 **Nuova Richiesta Bando Interno!** <@&${ROLE_ID}>`,
-        embeds: [{
-            title: "📋 RICHIESTA ACCESSO REPARTO",
-            color: 2123412,
-            fields: [
-                { name: "🎯 Reparto richiesto", value: `**${data.reparto}**`, inline: false },
-                { name: "👤 Dati Operatore", value: `**Nominativo:** ${data.nomecognome}\n**Matricola:** #${data.matricola}\n**Grado:** ${data.grado}`, inline: true },
-                { name: "📑 Esperienza Operativa", value: data.esperienza },
-                { name: "💭 Motivazione", value: data.motivazione }
-            ],
-            footer: { text: "LSPD - Terminale Bandi Interni" },
-            timestamp: new Date()
-        }]
-    };
-
-    fetch(WEBHOOK_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-    }).then(() => {
-        const notify = document.getElementById('notification');
-        notify.style.display = 'block';
+    document.getElementById('bandoForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('btnInvia');
+        const btnLogin = document.getElementById('btnLogin'); // Referenza al tasto login
         
-        // Timer di 5 secondi per mostrare il messaggio di successo prima del logout
-        setTimeout(() => {
-            notify.style.display = 'none';
-            btn.innerText = "INOLTRA AL COMANDO";
-            btn.disabled = false;
-            document.getElementById('bandoForm').reset();
+        btn.innerText = "CRIPTAGGIO E INVIO...";
+        btn.disabled = true;
+
+        const data = {
+            reparto: document.getElementById('reparto').value,
+            nomecognome: document.getElementById('nomecognome').value,
+            matricola: document.getElementById('matricola').value,
+            grado: document.getElementById('grado').value,
+            esperienza: document.getElementById('esperienza').value,
+            motivazione: document.getElementById('motivazione').value
+        };
+
+        const payload = {
+            content: `📢 **Nuova Richiesta Bando Interno!** <@&${ROLE_ID}>`,
+            embeds: [{
+                title: "📋 RICHIESTA ACCESSO REPARTO",
+                color: 2123412,
+                fields: [
+                    { name: "🎯 Reparto richiesto", value: `**${data.reparto}**`, inline: false },
+                    { name: "👤 Dati Operatore", value: `**Nominativo:** ${data.nomecognome}\n**Matricola:** #${data.matricola}\n**Grado:** ${data.grado}`, inline: true },
+                    { name: "📑 Esperienza Operativa", value: data.esperienza },
+                    { name: "💭 Motivazione", value: data.motivazione }
+                ],
+                footer: { text: "LSPD - Terminale Bandi Interni" },
+                timestamp: new Date()
+            }]
+        };
+
+        fetch(WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(() => {
+            const notify = document.getElementById('notification');
+            notify.style.display = 'block';
             
-            // AZIONE: Riporta al login effettuando il logout
-            logout(); 
-        }, 5000);
-    }).catch(err => {
-        alert("Errore critico di rete.");
-        btn.disabled = false;
-        btn.innerText = "INOLTRA AL COMANDO";
+            setTimeout(() => {
+                notify.style.display = 'none';
+                
+                // 1. Reset tasto invio bando
+                btn.innerText = "INOLTRA AL COMANDO";
+                btn.disabled = false;
+                document.getElementById('bandoForm').reset();
+                
+                // 2. Reset tasto login (importante per quando l'utente torna indietro)
+                btnLogin.innerText = "AUTENTICAZIONE";
+                btnLogin.disabled = false;
+
+                // 3. Esegui logout
+                logout(); 
+            }, 5000);
+        }).catch(err => {
+            alert("Errore critico di rete.");
+            btn.disabled = false;
+            btn.innerText = "INOLTRA AL COMANDO";
+        });
     });
-});
 </script>
 
 </body>
 </html>
+
 
