@@ -6,21 +6,24 @@
     <title>LSPD - Portale Bandi</title>
     
     <link rel="icon" type="image/png" href="./favicon.png">
+    <link rel="apple-touch-icon" href="./favicon.png">
 
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Barlow+Condensed:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --police-blue: #003366;
+            --police-blue: #0055ff; /* Neon Blue */
+            --police-dark: #002266;
             --police-accent: #ffd700;
             --terminal-bg: #05070a;
-            --border-blue: #1e3a5f;
+            --border-blue: #0055ff;
+            --neon-glow: rgba(0, 85, 255, 0.4);
+            --danger: #ff4444;
         }
 
         body {
             background-color: var(--terminal-bg);
-            /* BANNER A TUTTO SCHERMO */
             background: 
-                linear-gradient(rgba(5, 7, 10, 0.85), rgba(5, 7, 10, 0.85)), 
+                linear-gradient(rgba(5, 7, 10, 0.9), rgba(5, 7, 10, 0.9)), 
                 url('./banner.png') no-repeat center center fixed;
             background-size: cover;
             color: #ffffff;
@@ -32,50 +35,51 @@
             min-height: 100vh;
         }
 
-        /* LOGO SOPRA IL MODULO */
+        /* LOGO CON GLOW */
         .police-logo {
-            width: 140px;
+            width: 130px;
             height: auto;
-            margin-top: 40px;
-            margin-bottom: 10px;
+            margin-top: 30px;
             z-index: 10;
-            filter: drop-shadow(0 0 15px rgba(0,0,0,0.8));
+            filter: drop-shadow(0 0 15px var(--neon-glow));
         }
 
         .container {
             width: 90%;
-            max-width: 600px;
-            background: rgba(13, 17, 23, 0.95); /* Leggera trasparenza per vedere il banner */
-            border: 2px solid var(--border-blue);
-            padding: 40px;
-            margin: 20px 0 30px 0;
+            max-width: 650px;
+            background: rgba(13, 17, 23, 0.95);
+            border: 1px solid var(--border-blue);
+            padding: 35px;
+            margin: 20px 0 100px 0; /* Spazio per il footer fisso */
             position: relative;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.7);
-            backdrop-filter: blur(5px);
+            box-shadow: 0 0 25px var(--neon-glow), inset 0 0 10px var(--neon-glow);
+            backdrop-filter: blur(10px);
         }
 
         .classified-tag {
             position: absolute;
             top: 10px;
             right: 10px;
-            border: 2px solid #ff4444;
-            color: #ff4444;
+            border: 1px solid var(--danger);
+            color: var(--danger);
             padding: 2px 10px;
             font-family: 'Orbitron';
-            font-size: 0.7rem;
-            transform: rotate(5deg);
+            font-size: 0.65rem;
             font-weight: bold;
+            text-transform: uppercase;
+            box-shadow: 0 0 8px rgba(255, 68, 68, 0.2);
         }
 
         h1 {
             font-family: 'Orbitron', sans-serif;
             text-align: center;
             letter-spacing: 2px;
-            font-size: 1.4rem;
+            font-size: 1.3rem;
             color: white;
-            border-bottom: 1px solid var(--border-blue);
-            padding-bottom: 10px;
+            border-bottom: 2px solid var(--police-accent);
+            padding-bottom: 15px;
             margin-bottom: 30px;
+            text-shadow: 0 0 10px var(--neon-glow);
         }
 
         .form-group { margin-bottom: 20px; }
@@ -85,64 +89,100 @@
             font-weight: bold;
             text-transform: uppercase;
             color: var(--police-accent);
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             margin-bottom: 8px;
+            letter-spacing: 1px;
         }
 
         input, textarea, select {
             width: 100%;
             padding: 12px;
-            background: rgba(22, 27, 34, 0.8);
-            border: 1px solid var(--border-blue);
+            background: rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(0, 85, 255, 0.3);
             color: white;
             font-family: 'Barlow Condensed', sans-serif;
             font-size: 1.1rem;
             box-sizing: border-box;
+            transition: 0.3s;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            border-color: var(--police-accent);
+            outline: none;
+            background: rgba(0, 85, 255, 0.1);
+            box-shadow: 0 0 12px var(--neon-glow);
         }
 
         button {
             width: 100%;
             padding: 18px;
-            background: var(--police-blue);
+            background: var(--police-dark);
             color: white;
-            border: 1px solid var(--police-accent);
+            border: 1px solid var(--police-blue);
             font-family: 'Orbitron', sans-serif;
             font-size: 1rem;
             font-weight: bold;
             cursor: pointer;
             transition: 0.3s;
             text-transform: uppercase;
-        }
-
-        button:hover {
-            background: #004080;
-            box-shadow: 0 0 15px rgba(0, 51, 102, 0.6);
-        }
-
-        footer {
-            margin-top: auto;
-            padding: 20px;
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 0.8rem;
-            text-align: center;
-            font-family: 'Orbitron', sans-serif;
             letter-spacing: 1px;
+            box-shadow: 0 0 15px var(--neon-glow);
         }
 
+        button:hover:not(:disabled) {
+            background: var(--police-blue);
+            box-shadow: 0 0 25px var(--police-blue);
+            color: #fff;
+        }
+
+        /* FOOTER FISSO NEON */
+        .main-footer {
+            width: 100%;
+            padding: 20px 0;
+            background: rgba(5, 7, 10, 0.95);
+            border-top: 1px solid var(--police-blue);
+            text-align: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 -5px 15px var(--neon-glow);
+            z-index: 100;
+        }
+
+        .footer-text {
+            font-family: 'Orbitron';
+            font-size: 0.7rem;
+            letter-spacing: 2px;
+            color: rgba(255, 255, 255, 0.7);
+            text-shadow: 0 0 5px var(--neon-glow);
+        }
+
+        .footer-text span {
+            color: var(--police-accent);
+        }
+
+        /* NOTIFICA OVERLAY */
         #notification {
             display: none;
             position: fixed;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: #002244;
+            background: rgba(5, 15, 30, 0.95);
             border: 2px solid var(--police-accent);
             color: white;
-            padding: 30px;
+            padding: 40px;
             text-align: center;
             z-index: 1000;
             font-family: 'Orbitron';
-            box-shadow: 0 0 100px rgba(0,0,0,1);
+            box-shadow: 0 0 100px rgba(0,0,0,1), 0 0 30px var(--neon-glow);
+            backdrop-filter: blur(10px);
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px; margin-bottom: 120px; }
+            .footer-text { font-size: 0.55rem; padding: 0 10px; }
         }
     </style>
 </head>
@@ -151,18 +191,20 @@
 <img src="./logo.png" alt="LSPD Logo" class="police-logo">
 
 <div id="notification">
-    <h2 style="color: var(--police-accent);">REPORT ARCHIVIATO</h2>
-    <p>La richiesta è stata trasmessa al protocollo di sicurezza.</p>
+    <h2 style="color: var(--police-accent); margin-top: 0; letter-spacing: 3px;">REPORT ARCHIVIATO</h2>
+    <p style="font-size: 0.9rem;">Il fascicolo è stato trasmesso con successo ai server crittografati del Dipartimento.</p>
+    <div style="margin-top: 20px; color: var(--police-blue); font-size: 0.8rem;">CONNESSIONE SICURA STABILITA</div>
 </div>
 
 <div class="container">
     <div class="classified-tag">SECRET / CONFIDENTIAL</div>
-    <h1>LOS SANTOS POLICE DEPARTMENT BANDI INTERNI</h1>
+    <h1>BANDI INTERNI - DIVISIONI OPERATIVE</h1>
     
     <form id="bandoForm">
         <div class="form-group">
             <label>Divisione Selezionata</label>
             <select id="reparto" required>
+                <option value="" disabled selected>Seleziona Reparto...</option>
                 <option value="Detective Bureau">Detective Bureau</option>
                 <option value="SWAT">SWAT</option>
                 <option value="T.E.D.">T.E.D.</option>
@@ -173,32 +215,36 @@
             </select>
         </div>
 
-        <div class="form-group">
-            <label>Matricola Operativa</label>
-            <input type="text" id="matricola" placeholder="Es: 7241" required>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+            <div class="form-group">
+                <label>Matricola Operativa</label>
+                <input type="text" id="matricola" placeholder="Es: 7241" required>
+            </div>
+
+            <div class="form-group">
+                <label>Grado Attuale</label>
+                <input type="text" id="grado" placeholder="Es: PO III" required>
+            </div>
         </div>
 
         <div class="form-group">
-            <label>Grado Attuale</label>
-            <input type="text" id="grado" placeholder="Es: Police Officer III" required>
-        </div>
-
-        <div class="form-group">
-            <label>Registro Esperienze (Passato RP)</label>
-            <textarea id="esperienza" rows="3" placeholder="..." required></textarea>
+            <label>Registro Esperienze (Background Operativo)</label>
+            <textarea id="esperienza" rows="3" placeholder="Descrivi le tue esperienze pregresse..." required></textarea>
         </div>
 
         <div class="form-group">
             <label>Dichiarazione d'Intenti (Motivazione)</label>
-            <textarea id="motivazione" rows="4" placeholder="..." required></textarea>
+            <textarea id="motivazione" rows="4" placeholder="Perché desideri unirti a questa divisione?" required></textarea>
         </div>
 
-        <button type="submit" id="btnInvia">INOLTRA RICHIESTA</button>
+        <button type="submit" id="btnInvia">INOLTRA AL COMANDO</button>
     </form>
 </div>
 
-<footer>
-    © 2026 LOS SANTOS POLICE DEPARTMENT — PROTOCOLLO FUSION ETERNAL
+<footer class="main-footer">
+    <div class="footer-text">
+        © 2026 <span>LOS SANTOS POLICE DEPARTMENT</span> — PROTOCOLLO FUSION ETERNAL
+    </div>
 </footer>
 
 <script>
@@ -208,7 +254,7 @@
     document.getElementById('bandoForm').addEventListener('submit', function(e) {
         e.preventDefault();
         const btn = document.getElementById('btnInvia');
-        btn.innerText = "TRASMISSIONE...";
+        btn.innerText = "CRIPTAGGIO E INVIO...";
         btn.disabled = true;
 
         const data = {
@@ -220,17 +266,18 @@
         };
 
         const payload = {
-            content: `<@&${ROLE_ID}>`, // TAG DEL RUOLO
+            content: `📢 **Nuova Richiesta Bando Interno!** <@&${ROLE_ID}>`,
             embeds: [{
-                title: "📋 NUOVA RICHIESTA DI BANDO REPARTO",
+                title: "📋 RICHIESTA ACCESSO REPARTO",
+                description: `Un operatore ha sottomesso la propria candidatura per una divisione speciale.`,
                 color: 2123412,
                 fields: [
                     { name: "🎯 Reparto richiesto", value: `**${data.reparto}**`, inline: false },
-                    { name: "👤 Operatore", value: `Matricola: ${data.matricola}\nGrado: ${data.grado}`, inline: false },
-                    { name: "📑 Esperienza", value: data.esperienza },
+                    { name: "👤 Dati Operatore", value: `**Matricola:** #${data.matricola}\n**Grado:** ${data.grado}`, inline: true },
+                    { name: "📑 Esperienza Operativa", value: data.esperienza },
                     { name: "💭 Motivazione", value: data.motivazione }
                 ],
-                footer: { text: "LSPD - Gestione bandi" },
+                footer: { text: "LSPD - Terminale Bandi Interni" },
                 timestamp: new Date()
             }]
         };
@@ -240,16 +287,19 @@
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(payload)
         }).then(() => {
-            document.getElementById('notification').style.display = 'block';
+            const notify = document.getElementById('notification');
+            notify.style.display = 'block';
+            
             setTimeout(() => {
-                document.getElementById('notification').style.display = 'none';
-                btn.innerText = "REGISTRA RAPPORTO";
+                notify.style.display = 'none';
+                btn.innerText = "INOLTRA AL COMANDO";
                 btn.disabled = false;
                 document.getElementById('bandoForm').reset();
-            }, 4000);
+            }, 5000);
         }).catch(err => {
-            alert("Errore critico durante la trasmissione.");
+            alert("Errore critico di rete. Riprovare l'invio.");
             btn.disabled = false;
+            btn.innerText = "INOLTRA AL COMANDO";
         });
     });
 </script>
