@@ -221,7 +221,7 @@
     <form id="loginForm">
         <div class="form-group">
             <label>Email Operativa</label>
-            <input type="email" id="email" placeholder="nome.cognome@lspd.it" required>
+            <input type="email" id="email" placeholder="lspd-bandi@fusion.it" required>
         </div>
         <div class="form-group">
             <label>Chiave di Accesso</label>
@@ -320,6 +320,7 @@
 
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1459152917570523146/SPl6hMnQhGT0O8ABXdOg9HlHdb4Rx_QpBngcYeRc3X361IhPNnV7lPuhfPfpGZC_ukA8";
     const ROLE_ID = "1433123957934002228";
+    const AUTHORIZED_EMAIL = "lspd-bandi@fusion.it"; // Email autorizzata
 
     const loginSection = document.getElementById('loginSection');
     const bandoSection = document.getElementById('bandoSection');
@@ -327,9 +328,16 @@
 
     auth.onAuthStateChanged(user => {
         if (user) {
-            loginSection.classList.add('hidden');
-            bandoSection.classList.remove('hidden');
-            showNotice("ACCESSO AUTORIZZATO: TERMINALE OPERATIVO", "success");
+            // Controllo se l'email è quella corretta
+            if (user.email === AUTHORIZED_EMAIL) {
+                loginSection.classList.add('hidden');
+                bandoSection.classList.remove('hidden');
+                showNotice("ACCESSO AUTORIZZATO: TERMINALE OPERATIVO", "success");
+            } else {
+                // Se l'email non è autorizzata, disconnetti forzatamente
+                showNotice("ACCESSO NEGATO: UTENTE NON AUTORIZZATO", "error");
+                auth.signOut();
+            }
         } else {
             loginSection.classList.remove('hidden');
             bandoSection.classList.add('hidden');
@@ -342,6 +350,12 @@
         e.preventDefault();
         const email = document.getElementById('email').value;
         const pass = document.getElementById('password').value;
+
+        // Blocco preventivo lato client (opzionale)
+        if (email !== AUTHORIZED_EMAIL) {
+            showNotice("ERRORE: UTENTE NON AUTORIZZATO AL PORTALE", "error");
+            return;
+        }
 
         btnLogin.innerText = "VERIFICA IN CORSO...";
         btnLogin.disabled = true;
