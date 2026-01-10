@@ -22,9 +22,7 @@
 
         body {
             background-color: var(--terminal-bg);
-            background: 
-                linear-gradient(rgba(5, 7, 10, 0.9), rgba(5, 7, 10, 0.9)), 
-                url('./banner.png') no-repeat center center fixed;
+            background: linear-gradient(rgba(5, 7, 10, 0.9), rgba(5, 7, 10, 0.9)), url('./banner.png') no-repeat center center fixed;
             background-size: cover;
             color: #ffffff;
             font-family: 'Barlow Condensed', sans-serif;
@@ -54,6 +52,8 @@
             box-shadow: 0 0 25px var(--neon-glow), inset 0 0 10px var(--neon-glow);
             backdrop-filter: blur(10px);
         }
+
+        .hidden { display: none !important; }
 
         .classified-tag {
             position: absolute;
@@ -92,22 +92,20 @@
             letter-spacing: 1px;
         }
 
-        /* FIX LEGGIBILITÀ INPUT E SELECT */
         input, textarea, select {
             width: 100%;
             padding: 12px;
-            background: rgba(0, 0, 0, 0.7); /* Sfondo più scuro per contrasto */
+            background: rgba(0, 0, 0, 0.7);
             border: 1px solid rgba(0, 85, 255, 0.4);
             color: white;
             font-family: 'Barlow Condensed', sans-serif;
             font-size: 1.1rem;
             box-sizing: border-box;
             transition: 0.3s;
-            appearance: none; /* Rimuove lo stile di default */
         }
 
-        /* STILE SPECIFICO SELECT (TENDINA) */
         select {
+            appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23ffd700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
             background-repeat: no-repeat;
             background-position: right 15px center;
@@ -115,11 +113,7 @@
             cursor: pointer;
         }
 
-        /* Colore delle opzioni quando il menu è aperto */
-        select option {
-            background-color: #0d1117; 
-            color: white;
-        }
+        select option { background-color: #0d1117; color: white; }
 
         input:focus, textarea:focus, select:focus {
             border-color: var(--police-accent);
@@ -148,49 +142,34 @@
             box-shadow: 0 0 25px var(--police-blue);
         }
 
-        .main-footer {
-            width: 100%;
-            padding: 20px 0;
-            background: rgba(5, 7, 10, 0.95);
-            border-top: 1px solid var(--police-blue);
-            text-align: center;
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 -5px 15px var(--neon-glow);
-            z-index: 100;
-        }
-
-        .footer-text {
-            font-family: 'Orbitron';
+        #logoutBtn {
+            background: transparent;
+            border: 1px solid var(--danger);
+            color: var(--danger);
+            width: auto;
+            padding: 5px 15px;
             font-size: 0.7rem;
-            letter-spacing: 2px;
-            color: rgba(255, 255, 255, 0.7);
-            text-shadow: 0 0 5px var(--neon-glow);
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            box-shadow: none;
         }
 
+        .main-footer {
+            width: 100%; padding: 20px 0; background: rgba(5, 7, 10, 0.95);
+            border-top: 1px solid var(--police-blue); text-align: center;
+            position: fixed; bottom: 0; left: 0; backdrop-filter: blur(10px);
+            box-shadow: 0 -5px 15px var(--neon-glow); z-index: 100;
+        }
+
+        .footer-text { font-family: 'Orbitron'; font-size: 0.7rem; letter-spacing: 2px; color: rgba(255, 255, 255, 0.7); }
         .footer-text span { color: var(--police-accent); }
 
         #notification {
-            display: none;
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            background: rgba(5, 15, 30, 0.95);
-            border: 2px solid var(--police-accent);
-            color: white;
-            padding: 40px;
-            text-align: center;
-            z-index: 1000;
-            font-family: 'Orbitron';
-            box-shadow: 0 0 100px rgba(0,0,0,1), 0 0 30px var(--neon-glow);
-            backdrop-filter: blur(10px);
-        }
-
-        @media (max-width: 600px) {
-            .container { padding: 20px; margin-bottom: 120px; }
+            display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            background: rgba(5, 15, 30, 0.95); border: 2px solid var(--police-accent);
+            color: white; padding: 40px; text-align: center; z-index: 1000; font-family: 'Orbitron';
+            box-shadow: 0 0 100px rgba(0,0,0,1), 0 0 30px var(--neon-glow); backdrop-filter: blur(10px);
         }
     </style>
 </head>
@@ -204,7 +183,25 @@
     <div style="margin-top: 20px; color: var(--police-blue); font-size: 0.8rem;">CONNESSIONE SICURA STABILITA</div>
 </div>
 
-<div class="container">
+<div id="loginSection" class="container">
+    <div class="classified-tag">Restricted Access</div>
+    <h1>LOGIN TERMINALE LSPD</h1>
+    <form id="loginForm">
+        <div class="form-group">
+            <label>Email Operativa</label>
+            <input type="email" id="email" placeholder="nome.cognome@lspd.it" required>
+        </div>
+        <div class="form-group">
+            <label>Chiave di Accesso</label>
+            <input type="password" id="password" placeholder="••••••••" required>
+        </div>
+        <button type="submit" id="btnLogin">AUTENTICAZIONE</button>
+        <p id="loginError" style="color: var(--danger); text-align: center; margin-top: 15px; display: none; font-family: 'Orbitron'; font-size: 0.8rem;"></p>
+    </form>
+</div>
+
+<div id="bandoSection" class="container hidden">
+    <button id="logoutBtn" onclick="logout()">LOGOUT</button>
     <div class="classified-tag">SECRET / CONFIDENTIAL</div>
     <h1>BANDI INTERNI - DIVISIONI OPERATIVE</h1>
     
@@ -223,6 +220,11 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label>Nome e Cognome</label>
+            <input type="text" id="nomecognome" placeholder="Es: Mario Rossi" required>
+        </div>
+
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
             <div class="form-group">
                 <label>Matricola Operativa</label>
@@ -235,12 +237,12 @@
         </div>
 
         <div class="form-group">
-            <label>Registro Esperienze (Background Operativo)</label>
+            <label>Registro Esperienze</label>
             <textarea id="esperienza" rows="3" placeholder="Descrivi le tue esperienze pregresse..." required></textarea>
         </div>
 
         <div class="form-group">
-            <label>Dichiarazione d'Intenti (Motivazione)</label>
+            <label>Dichiarazione d'Intenti</label>
             <textarea id="motivazione" rows="4" placeholder="Perché desideri unirti a questa divisione?" required></textarea>
         </div>
 
@@ -254,9 +256,59 @@
     </div>
 </footer>
 
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+
 <script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyDfIW4GjBZ4QGPvfJtzLAr34VxDRLzcU6M",
+        authDomain: "lspd-portal-d34b0.firebaseapp.com",
+        projectId: "lspd-portal-d34b0",
+        storageBucket: "lspd-portal-d34b0.firebasestorage.app",
+        messagingSenderId: "991237515788",
+        appId: "1:991237515788:web:302c1b6819947116199c29",
+        measurementId: "G-Y4XMD4QLMQ"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+
     const WEBHOOK_URL = "https://discord.com/api/webhooks/1459152917570523146/SPl6hMnQhGT0O8ABXdOg9HlHdb4Rx_QpBngcYeRc3X361IhPNnV7lPuhfPfpGZC_ukA8";
     const ROLE_ID = "1433123957934002228";
+
+    const loginSection = document.getElementById('loginSection');
+    const bandoSection = document.getElementById('bandoSection');
+
+    auth.onAuthStateChanged(user => {
+        if (user) {
+            loginSection.classList.add('hidden');
+            bandoSection.classList.remove('hidden');
+        } else {
+            loginSection.classList.remove('hidden');
+            bandoSection.classList.add('hidden');
+        }
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('email').value;
+        const pass = document.getElementById('password').value;
+        const btn = document.getElementById('btnLogin');
+        const err = document.getElementById('loginError');
+
+        btn.innerText = "VERIFICA IN CORSO...";
+        btn.disabled = true;
+        err.style.display = "none";
+
+        auth.signInWithEmailAndPassword(email, pass).catch(error => {
+            err.innerText = "ACCESSO NEGATO: CREDENZIALI ERRATE";
+            err.style.display = "block";
+            btn.innerText = "AUTENTICAZIONE";
+            btn.disabled = false;
+        });
+    });
+
+    function logout() { auth.signOut(); }
 
     document.getElementById('bandoForm').addEventListener('submit', function(e) {
         e.preventDefault();
@@ -266,6 +318,7 @@
 
         const data = {
             reparto: document.getElementById('reparto').value,
+            nomecognome: document.getElementById('nomecognome').value,
             matricola: document.getElementById('matricola').value,
             grado: document.getElementById('grado').value,
             esperienza: document.getElementById('esperienza').value,
@@ -279,7 +332,7 @@
                 color: 2123412,
                 fields: [
                     { name: "🎯 Reparto richiesto", value: `**${data.reparto}**`, inline: false },
-                    { name: "👤 Dati Operatore", value: `**Matricola:** #${data.matricola}\n**Grado:** ${data.grado}`, inline: true },
+                    { name: "👤 Dati Operatore", value: `**Nominativo:** ${data.nomecognome}\n**Matricola:** #${data.matricola}\n**Grado:** ${data.grado}`, inline: true },
                     { name: "📑 Esperienza Operativa", value: data.esperienza },
                     { name: "💭 Motivazione", value: data.motivazione }
                 ],
@@ -311,4 +364,3 @@
 
 </body>
 </html>
-
