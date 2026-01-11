@@ -345,7 +345,7 @@
         } else {
             loginSection.classList.remove('hidden');
             bandoSection.classList.add('hidden');
-            btnLogin.innerText = "AUTENTICAZIONE";
+            btnLogin.innerText = "EFFETTUA IL LOGIN";
             btnLogin.disabled = false;
         }
     });
@@ -366,7 +366,7 @@
 
         auth.signInWithEmailAndPassword(email, pass).catch(error => {
             showNotice("ERRORE: CREDENZIALI NON VALIDE", "error");
-            btnLogin.innerText = "AUTENTICAZIONE";
+            btnLogin.innerText = "EFFETTUA IL LOGIN";
             btnLogin.disabled = false;
         });
     });
@@ -433,6 +433,7 @@
 
 </body>
 </html>
+
 
 
 
